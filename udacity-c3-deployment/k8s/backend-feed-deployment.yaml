@@ -1,27 +1,30 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1 #extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
     service: backend-feed
   name: backend-feed
 spec:
-  replicas: 3
+  replicas: 2
+  selector:
+    matchLabels:
+      service: backend-feed
   template:
     metadata:
       labels:
         service: backend-feed
     spec:
       containers:
-      - image: scheele/udacity-restapi-feed
+      - image: gulvaiz/udacity-restapi-feed
         name: backend-feed
         imagePullPolicy: Always  
         resources:
           requests:
             memory: "64Mi"
-            cpu: "250m"
+            cpu: "100m"
           limits:
             memory: "1024Mi"
-            cpu: "500m"                  
+            cpu: "200m"                  
         env:
         - name: URL
           valueFrom:

@@ -1,0 +1,112 @@
+docker run --rm --publish 8080:8080 -v $HOME/.aws:/root/.aws --env POSTGRESS_HOST=$POSTGRESS_HOST --env POSTGRESS_USERNAME=$POSTGRESS_USERNAME --env POSTGRESS_PASSWORD=$POSTGRESS_PASSWORD --env POSTGRESS_DB=$POSTGRESS_DB --env AWS_REGION=$AWS_REGION --env AWS_PROFILE=$AWS_PROFILE --env AWS_BUCKET=$AWS_BUCKET --env JWT_SECRET=$JWT_SECRET --name feed gulvaiz/udacity-restapi-feed
+
+
+
+Access to XMLHttpRequest at has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+
+
+
+
+docker run --rm --publish 8080:8080 -v $HOME/.aws:/root/.aws --env POSTGRESS_HOST=$POSTGRESS_HOST --env POSTGRESS_USERNAME=$POSTGRESS_USERNAME --env POSTGRESS_PASSWORD=$POSTGRESS_PASSWORD --env POSTGRESS_DB=$POSTGRESS_DB --env AWS_REGION=$AWS_REGION --env AWS_PROFILE=$AWS_PROFILE --env AWS_BUCKET=$AWS_BUCKET --env JWT_SECRET=$JWT_SECRET --name feed gulvaiz/udacity-restapi-feed
+Docker
+- Check if you have any container running
+docker container ls
+docker container kill CONTAINERID
+
+- create docker images [You do this under respective directories]
+docker build -t gulvaiz/udacity-restapi-user .
+docker build -t gulvaiz/udacity-restapi-feed .
+docker build -t gulvaiz/udacity-frontend .
+
+- Run Docker container
+- Ensure that images can be pulled by running the following command
+docker pull IMAGE_NAME  (In my case it is: gulvaiz/udacity-restapi-feed)
+
+
+
+
+Kubernetes
+- Create S3: state.dev.tellus.k8s.local
+- Set the CORS as shown below
+
+<?xml version="1.0" encoding="UTF-8"?>
+<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+<CORSRule>
+    <AllowedOrigin>*</AllowedOrigin>
+    <AllowedMethod>POST</AllowedMethod>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>PUT</AllowedMethod>
+    <AllowedMethod>DELETE</AllowedMethod>
+    <AllowedMethod>HEAD</AllowedMethod>
+    <AllowedHeader>*</AllowedHeader>
+</CORSRule>
+</CORSConfiguration>
+
+Finally the state: export KOPS_STATE_STORE=s3://state.dev.tellus.k8s.local
+
+
+kops create cluster \
+       --state "s3://state.dev.tellus.k8s.local" \
+       --zones "eu-central-1a,eu-central-1b"  \
+       --master-count 3 \
+       --master-size=t2.medium \
+       --node-count 2 \
+       --node-size=t2.medium \
+       --name dev.tellus.k8s.local \
+       --yes
+
+
+       kops update cluster  \
+            --state "s3://state.dev.tellus.k8s.local" \
+            --yes
+
+            kops validate cluster \
+                  --state "s3://state.dev.tellus.k8s.local" \
+                  --name dev.tellus.k8s.local
+
+      -- Verify the status on nodes
+      kubectl get nodes
+
+
+      --deployement of Pods
+
+      kubectl apply -f backend-feed-deployment.yaml
+      kubectl apply -f backend-user-deployment.yaml
+      kubectl apply -f reverseproxy-deployment.yaml
+      kubectl apply -f frontend-deployment.yaml
+      #kubectl apply -f pod-example/pod.yaml
+
+      -Deploy services
+      kubectl apply -f backend-feed-service.yaml
+      kubectl apply -f backend-user-service.yaml
+      kubectl apply -f reverseproxy-service.yaml
+      kubectl apply -f frontend-service.yaml
+
+      --Verify the services deployed
+      kubectl get svc
+      SCREENSHOT
+      -- Once services are up and running you can set port forwarding
+       kubectl port-forward service/frontend 8100:8100
+       kubectl port-forward service/reverseproxy 8080:8080
+
+      -Deploy Configmaps and secrets
+      kubectl apply -f aws-secret.yaml
+      kubectl apply -f env-secret.yaml
+      kubectl apply -f env-configmap.yaml
+
+
+      --Get all deployed deployments
+      kubectl get deployment
+      --Get all deployed replica-sets
+      kubectl get rs
+      --Debug Kubernetes
+      kubectl describe pods PODNAME
+
+      Now that kubernetes cluster is configured with pods and services. It's time to run the application
+      For this you need to open the https (443) port in the security group of the Loadbalanceer of the k8s cluster.
+      Moreover we need to open 8100 port which is used by our reverseproxy service.
+
+
+
+            kops delete cluster dev.tellus.k8s.local --yes
+            kops delete cluster stellus.k8s.local --yes

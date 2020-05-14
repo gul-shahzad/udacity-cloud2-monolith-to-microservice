@@ -2,9 +2,12 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: pod-example
+  labels:
+    app: nginx
+    env: dev
 spec:
   containers:
-  - image: scheele/reverseproxy
+  - image: gulvaiz/reverseproxy
     name: reverseproxy
     imagePullPolicy: Always          
     resources:
