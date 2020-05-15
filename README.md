@@ -51,3 +51,18 @@ Ionic CLI can build the frontend into static HTML/CSS/JavaScript files. These fi
 ionic build
 ```
 ***
+
+## Deployment
+
+### Virtual environment
+In order to separate your environment from other application on your system you ceate a profile. 
+python3 -m venv ~/.venv
+source ~/.venv/bin/activate
+Here you can also create the configurtion such as database details, S3 details etc to avoid them inside project. Later in K8s you can configure the same through configmaps and secrets. 
+
+![alt text](credentials.png "Configuration in venv file")
+
+
+### Docker
+You can use following command to deploy it on 
+
