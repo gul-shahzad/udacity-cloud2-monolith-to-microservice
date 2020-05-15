@@ -13,6 +13,13 @@ Docker
 docker container ls
 docker container kill CONTAINERID
 
+- Create and push images
+1. Build the images: `docker-compose -f docker-compose-build.yaml build --parallel`
+2. Push the images: `docker-compose -f docker-compose-build.yaml push`
+3. Run the container: `docker-compose up`
+
+
+
 - create docker images [You do this under respective directories]
 docker build -t gulvaiz/udacity-restapi-user .
 docker build -t gulvaiz/udacity-restapi-feed .
@@ -106,6 +113,12 @@ kops create cluster \
       For this you need to open the https (443) port in the security group of the Loadbalanceer of the k8s cluster.
       Moreover we need to open 8100 port which is used by our reverseproxy service.
 
+
+
+     - Deploying Dashboard UI
+      kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+
+      kubectl proxy
 
 
             kops delete cluster dev.tellus.k8s.local --yes

@@ -6,7 +6,7 @@ services:
     image: gulvaiz/reverseproxy 
   backend_user:
     build:
-      context: .././udacity-c3-restapi-user
+      context: ../../udacity-c3-restapi-user
     image: gulvaiz/udacity-restapi-user
   backend_feed:
     build:
