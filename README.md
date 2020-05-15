@@ -126,7 +126,8 @@ You can verify afterwards in Docker hub to ensure the images are registered.
 Ensure that images can be pulled by running the following command
         ```bash
         docker pull IMAGE_NAME        
-        ``` (In my case it is: gulvaiz/udacity-restapi-feed)
+        ``` 
+(In my case the IMAGE_NAME was: gulvaiz/udacity-restapi-feed)
 
 
 The application should be now running on Docker container, as shown below. 
