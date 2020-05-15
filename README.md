@@ -68,6 +68,7 @@ Here you can also create the configurtion such as database details, S3 details e
 Before we start with deployment of the application we need to perform following steps as pre-req:
 
 1. Create S3 bucket that contains the images stored on application. Make is publically accessible and set CORS as shown below. 
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
 <CORSRule>
@@ -80,7 +81,7 @@ Before we start with deployment of the application we need to perform following 
     <AllowedHeader>*</AllowedHeader>
 </CORSRule>
 </CORSConfiguration>
-
+```
 2. Create S3 bucket that will hold the state of the cluster. I created the s3 "state.dev.tellus.k8s.local". Once created you configure it as a environmental variable to avoid providing this information with commands. 
 export KOPS_STATE_STORE=s3://state.dev.tellus.k8s.local. I added it in ~/.venv file. 
 3. Create RDS Posgtres database and set the endpoint, instance name, password in ~/.venv file. Later in Kubernetes deployment you need to set them in configmaps and secrets.  
